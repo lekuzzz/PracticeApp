@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>practice App</title>
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+        <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
+        <script src="{{url_for('static', filename='chart.js') }}"></script>
+        
+    </head>
+    <body>
+    <h1> Chart</h1>
+    <script>
+        jsonSensors = JSON.parse('{{sensors|safe}}');
+    </script>
+    <form action="/" method="POST" id="form1">
+        <div class="row">
+            <div class="col-9 offset-1 pl-0 mt-2">
+                <input required name="data" class="form-control" list="dataList" id="data" placeholder="Выберите Обрабатываемый файл" autocomplete="off">
+                <datalist id="dataList">
+                    <option value="JSON">
+                    <option value="CSV">
+                </datalist>
+                <input required name="device" class="form-control mt-2" list="deviceList" id="device" placeholder="Выберите прибор" autocomplete="off" onchange='changeValue(this, jsonSensors)'>
+                <datalist id="deviceList">
+                    {% for j in names %}
+                        <option value="{{j}}">
+                    {% endfor %}
+                </datalist>
+                <input required name="sensors" class="form-control mt-2" list="sensorsList" id="sensors" placeholder="Выберите сенсор" autocomplete="off">
+                <datalist id="sensorsList">                   
+                </datalist>
+                <div class="col-12 mt-2">
+                    <p>
+                        <label for="localdate">Начальное время:   </label>
+                        <input type="datetime-local" id="localdate" name="startDate" />
+                    </p>
+                </div>
+                <div class="col-12 mt-2">
+                    <p>
+                        <label for="localdate">Конечное время:   </label>
+                        <input type="datetime-local" id="localdate" name="endDate"/>
+                    </p>
+                </div>
+                <h3>Выберете параметр осреднения</h3>
+                <div class="">
+                    <div class="form-check form-check-inline mt-2">
+                        <input class="form-check-input" type="radio" name="averaging" id="default" value="default">
+                        <label class="form-check-label" for="inlineRadio1">Не осреднять</label>
+                    </div>
+                    <div class="form-check form-check-inline mt-2">
+                        <input class="form-check-input" type="radio" name="averaging" id="perHour" value="perHour">
+                        <label class="form-check-label" for="inlineRadio2">Осреднить за час</label>
+                    </div>
+                    <div class="form-check form-check-inline mt-2">
+                        <input class="form-check-input" type="radio" name="averaging" id="in3hours" value="in3hours">
+                        <label class="form-check-label" for="inlineRadio3">Осреднить за 3 часа</label>
+                    </div>
+                    <div class="form-check form-check-inline mt-2">
+                        <input class="form-check-input" type="radio" name="averaging" id="perDay" value="perDay">
+                        <label class="form-check-label" for="inlineRadio3">Осреднить за сутки</label>
+                    </div>
+                </div>
+                <h3>Выберете тип графика</h3>
+                <div class="">
+                    <div class="form-check form-check-inline mt-2">
+                        <input class="form-check-input" type="radio" name="chart" id="scatter" value="scatter">
+                        <label class="form-check-label" for="inlineRadio1">линейный</label>
+                    </div>
+                    <div class="form-check form-check-inline mt-2">
+                        <input class="form-check-input" type="radio" name="chart" id="bar" value="bar">
+                        <label class="form-check-label" for="inlineRadio2">столбчатый</label>
+                    </div>
+                    <div class="form-check form-check-inline mt-2">
+                        <input class="form-check-input" type="radio" name="chart" id="box" value="box">
+                        <label class="form-check-label" for="inlineRadio3">Бокс</label>
+                    </div>
+                </div>
+                <button type="submit" class=" mt-md-4 px-md-5 mb-5 mt-0S" >GO</button>
+            </div>
+        </div>
+    </form>
+
+    {% if viewJSON %}
+    <h4> Обрабатываемый файл: {{data}}</h4>
+    <h4> Данные взяты с брибора: {{device}}</h4>
+    <h4> Данные взяты с датчика: {{sens}}</h4>
+    <div id='myDiv'></div>
+    <script>
+       show('{{data}}', '{{device}}', '{{sens}}', '{{id}}' , '{{typeChart}}', '{{startDate}}' , '{{endDate}}');
+    </script>
+    {% endif %}
+    </body>
+</html> 
